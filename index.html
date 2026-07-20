@@ -23,6 +23,10 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #007AFF; }
 a { color: inherit; text-decoration: none; }
 a:hover { opacity: 0.75; }
 @keyframes om-hint { 0%, 100% { transform: translateY(0); opacity: 0.9; } 50% { transform: translateY(8px); opacity: 0.45; } }
+@media (hover: hover) and (pointer: fine) {
+  html, body, [data-screen-label="Home"], [data-screen-label="Home"] * { cursor: none !important; }
+}
+@media (hover: none), (pointer: coarse) { [data-cursor] { display: none !important; } }
 [data-wk-thumb] { display: none; }
 @media (hover: none), (max-width: 900px) {
   [data-wk-thumb] { display: block; }
@@ -85,7 +89,7 @@ a:hover { opacity: 0.75; }
     </section>
     <section id="about" ref="{{aboutRef}}" data-screen-label="About" style="max-width: 1280px; margin: 0 auto; padding: 40px 40px 150px;">
       <div style="color: rgba(60,60,67,0.6); font-size: 13px; font-weight: 700; letter-spacing: 0.3em; margin-bottom: 30px;">ABOUT</div>
-      <p style="margin: 0 0 44px; max-width: 21em; color: #0a0a0c; font-size: clamp(28px, 3.4vw, 52px); font-weight: 700; line-height: 1.24; letter-spacing: -0.015em; text-wrap: pretty; opacity: {{aboutOp}}; transform: {{aboutShift}}; transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);">중력을 믿는 디자이너, 이환희입니다 — 글자는 떨어뜨리고, 완성도는 끌어올립니다.</p>
+      <p style="margin: 0 0 44px; max-width: 21em; color: #0a0a0c; font-size: clamp(28px, 3.4vw, 52px); font-weight: 700; line-height: 1.24; letter-spacing: -0.015em;"><sc-for list="{{aboutWords}}" as="w" hint-placeholder-count="10"><span style="{{w.outer}}"><span style="{{w.inner}}">{{w.t}}</span></span></sc-for></p>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 40px; margin-bottom: 44px; opacity: {{aboutOp}}; transition: opacity 0.9s ease 0.18s;">
         <div>
           <div style="color: rgba(60,60,67,0.45); font-size: 12px; font-weight: 700; letter-spacing: 0.22em; margin-bottom: 14px;">EDUCATION</div>
@@ -115,12 +119,18 @@ a:hover { opacity: 0.75; }
       <span>GWANGJU, KR</span>
     </div>
   </section>
+  <div data-cursor="" ref="{{curRef}}" aria-hidden="true" style="position: fixed; top: 0; left: 0; z-index: 90; pointer-events: none; will-change: transform;">
+    <div style="{{curRingSt}}">{{curLabel}}</div>
+  </div>
+  <div data-cursor="" ref="{{dotRef}}" aria-hidden="true" style="position: fixed; top: 0; left: 0; z-index: 91; pointer-events: none; will-change: transform;">
+    <div style="{{curDotSt}}"></div>
+  </div>
   <div data-wk-peek="" ref="{{peekRef}}" aria-hidden="true" style="position: fixed; top: 0; left: 0; z-index: 40; width: max-content; pointer-events: none; will-change: transform;">
     <div style="{{peekInnerSt}}"><img src="{{peekSrc}}" alt="" style="max-width: min(340px, 34vw); max-height: 300px; width: auto; height: auto; display: block; border-radius: 16px; box-shadow: 0 22px 54px rgba(0,0,0,0.28);"></img></div>
   </div>
   <sc-if value="{{workOpen}}" hint-placeholder-val="{{false}}">
-    <div onClick="{{closeWork}}" style="position: fixed; inset: 0; z-index: 60; background: rgba(8,10,14,0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 4vw, 48px);">
-      <div role="dialog" aria-modal="true" aria-label="{{wTitle}}" onClick="{{stopProp}}" style="position: relative; width: 100%; max-width: 880px; max-height: 88vh; overflow-y: auto; background: #fff; border-radius: 28px; padding: clamp(26px, 4vw, 48px); box-shadow: 0 32px 90px rgba(0,0,0,0.34); font-family: 'Bricolage Grotesque', -apple-system, sans-serif;">
+    <div onClick="{{closeWork}}" style="{{modalBackdropSt}}">
+      <div role="dialog" aria-modal="true" aria-label="{{wTitle}}" onClick="{{stopProp}}" style="{{modalDialogSt}}">
         <button onClick="{{closeWork}}" aria-label="닫기" style="position: absolute; top: 18px; right: 18px; width: 42px; height: 42px; border-radius: 999px; border: 1px solid rgba(60,60,67,0.2); background: rgba(60,60,67,0.05); color: #0a0a0c; font-size: 17px; line-height: 1; cursor: pointer;">✕</button>
         <div style="color: rgba(60,60,67,0.6); font-size: 12px; font-weight: 700; letter-spacing: 0.2em; margin-bottom: 12px;">{{wCat}}</div>
         <h3 style="margin: 0 0 18px; color: #0a0a0c; font-size: clamp(26px, 3.6vw, 44px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; padding-right: 46px;">{{wTitle}}</h3>
@@ -202,10 +212,14 @@ const WORKS = [
   },
 ];
 
+const ABOUT_LINE = '중력을 믿는 디자이너, 이환희입니다 — 글자는 떨어뜨리고, 완성도는 끌어올립니다.';
+
 class Component extends DCLogic {
-  state = { done: false, scrolled: false, seen: {}, openWork: null, hoverWork: null };
+  state = { done: false, scrolled: false, seen: {}, openWork: null, hoverWork: null, modalIn: false, cursorHot: false };
   canvasRef = React.createRef();
   peekRef = React.createRef();
+  curRef = React.createRef();
+  dotRef = React.createRef();
   rootRef = React.createRef();
   headRef = React.createRef();
   workRef = React.createRef();
@@ -225,6 +239,19 @@ class Component extends DCLogic {
     }));
   }
 
+  openModal(i) {
+    clearTimeout(this.modalT);
+    this.setState({ openWork: i, modalIn: false, hoverWork: null });
+    requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ modalIn: true })));
+  }
+
+  closeModal() {
+    if (this.state.openWork == null) return;
+    clearTimeout(this.modalT);
+    this.setState({ modalIn: false });
+    this.modalT = setTimeout(() => this.setState({ openWork: null }), 260);
+  }
+
   renderVals() {
     const word = String(this.props.word ?? 'LEEHWANHEE').toUpperCase();
     const W = this.state.openWork != null ? WORKS[this.state.openWork] : null;
@@ -241,9 +268,44 @@ class Component extends DCLogic {
       onReplay: () => { const r = this.rootRef.current; if (r) r.scrollTop = 0; this.reset(); },
       workTitle: this.mkTitle('WORK', 'work', 0.1),
       ctaTitle: this.mkTitle("LET'S TALK", 'contact', 0.1),
+      aboutWords: ABOUT_LINE.split(' ').map((t, i) => {
+        const sn = !!this.state.seen.about;
+        const d = (0.05 + i * 0.055).toFixed(2);
+        return {
+          t: t + ' ',
+          outer: { display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom', paddingBottom: '0.14em', marginBottom: '-0.14em' },
+          inner: {
+            display: 'inline-block', whiteSpace: 'pre',
+            transform: sn ? 'translateY(0)' : 'translateY(108%)',
+            opacity: sn ? 1 : 0,
+            transition: 'transform 0.85s cubic-bezier(0.16,1,0.3,1) ' + d + 's, opacity 0.45s ease ' + d + 's',
+          },
+        };
+      }),
       aboutOp: this.state.seen.about ? 1 : 0,
       aboutShift: this.state.seen.about ? 'translateY(0)' : 'translateY(36px)',
       yes: true,
+      curRef: this.curRef, dotRef: this.dotRef,
+      curLabel: HV != null ? 'VIEW' : '',
+      curRingSt: (() => {
+        const view = HV != null, hot = this.state.cursorHot;
+        const size = view ? 76 : (hot ? 48 : 30);
+        return {
+          width: size + 'px', height: size + 'px', marginLeft: (-size / 2) + 'px', marginTop: (-size / 2) + 'px',
+          borderRadius: '999px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '12px', fontWeight: 800, letterSpacing: '0.14em',
+          color: view ? '#fff' : 'transparent',
+          background: view || hot ? '#007AFF' : 'transparent',
+          border: view || hot ? '1px solid transparent' : '1.5px solid ' + (this.state.scrolled ? 'rgba(10,10,12,0.45)' : 'rgba(255,255,255,0.75)'),
+          transition: 'width 0.35s cubic-bezier(0.34,1.4,0.64,1), height 0.35s cubic-bezier(0.34,1.4,0.64,1), margin 0.35s cubic-bezier(0.34,1.4,0.64,1), background 0.3s ease, border-color 0.3s ease, color 0.25s ease',
+        };
+      })(),
+      curDotSt: {
+        width: '6px', height: '6px', marginLeft: '-3px', marginTop: '-3px', borderRadius: '999px',
+        background: this.state.scrolled ? '#0a0a0c' : '#fff',
+        opacity: HV != null || this.state.cursorHot ? 0 : 1,
+        transition: 'opacity 0.25s ease, background 0.3s ease',
+      },
       peekRef: this.peekRef,
       peekSrc: HV != null ? WORKS[HV].img : '',
       peekInnerSt: {
@@ -293,8 +355,8 @@ class Component extends DCLogic {
             transform: on ? 'translate(0,0)' : 'translate(-10px, 10px)',
             transition: 'opacity 0.35s ease, transform 0.45s cubic-bezier(0.16,1,0.3,1)',
           },
-          open: () => this.setState({ openWork: i }),
-          keyOpen: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState({ openWork: i }); } },
+          open: () => this.openModal(i),
+          keyOpen: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.openModal(i); } },
           enter: (e) => {
             if (!this.hasHover) return;
             const row = e.currentTarget;
@@ -320,7 +382,25 @@ class Component extends DCLogic {
       wHasPages: !!(W && W.pages && W.pages.length),
       wPages: W && W.pages ? W.pages.map((src, n) => ({ src, alt: W.t + ' 보고서 ' + (n + 1) + '쪽' })) : [],
       wImage: W ? (W.detail || null) : null,
-      closeWork: () => this.setState({ openWork: null }),
+      closeWork: () => this.closeModal(),
+      modalBackdropSt: {
+        position: 'fixed', inset: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 'clamp(16px, 4vw, 48px)', background: 'rgba(8,10,14,0.55)',
+        backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+        opacity: this.state.modalIn ? 1 : 0,
+        transition: 'opacity 0.34s cubic-bezier(0.16,1,0.3,1)',
+      },
+      modalDialogSt: {
+        position: 'relative', width: '100%', maxWidth: '880px', maxHeight: '88vh', overflowY: 'auto',
+        background: '#fff', borderRadius: '28px', padding: 'clamp(26px, 4vw, 48px)',
+        boxShadow: '0 32px 90px rgba(0,0,0,0.34)',
+        fontFamily: "'Bricolage Grotesque', -apple-system, sans-serif",
+        opacity: this.state.modalIn ? 1 : 0,
+        transform: this.state.modalIn ? 'translateY(0) scale(1)' : 'translateY(30px) scale(0.95)',
+        transition: this.state.modalIn
+          ? 'opacity 0.3s ease, transform 0.52s cubic-bezier(0.34,1.4,0.64,1)'
+          : 'opacity 0.22s ease, transform 0.26s cubic-bezier(0.4,0,1,1)',
+      },
       stopProp: (e) => e.stopPropagation(),
     };
   }
@@ -331,11 +411,19 @@ class Component extends DCLogic {
     this.px = -9999; this.py = -9999;
     this.peekX = -400; this.peekY = -400;
     this.hasHover = window.matchMedia('(hover: hover)').matches;
+    this.curX = -400; this.curY = -400;
     this.onMove = e => { this.px = e.clientX; this.py = e.clientY; };
+    this.onHot = e => {
+      if (!this.hasHover) return;
+      const t = e.target;
+      const hot = !!(t && t.closest && t.closest('a, button, [role="button"], input, textarea'));
+      if (hot !== this.state.cursorHot) this.setState({ cursorHot: hot });
+    };
+    document.addEventListener('mouseover', this.onHot);
     this.onLeave = () => { this.px = -9999; this.py = -9999; };
     window.addEventListener('pointermove', this.onMove);
     window.addEventListener('pointerleave', this.onLeave);
-    this.onKey = e => { if (e.key === 'Escape' && this.state.openWork != null) this.setState({ openWork: null }); };
+    this.onKey = e => { if (e.key === 'Escape') this.closeModal(); };
     window.addEventListener('keydown', this.onKey);
     this.onResize = () => {
       this.W = window.innerWidth; this.H = window.innerHeight;
@@ -376,6 +464,9 @@ class Component extends DCLogic {
 
   componentWillUnmount() {
     cancelAnimationFrame(this.raf);
+    clearTimeout(this.modalT);
+    window.removeEventListener('keydown', this.onKey);
+    document.removeEventListener('mouseover', this.onHot);
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('pointermove', this.onMove);
     window.removeEventListener('pointerleave', this.onLeave);
@@ -572,6 +663,14 @@ class Component extends DCLogic {
         ctx.fillText(m.ch, 0, 0);
         ctx.restore();
       }
+    }
+
+    if (this.hasHover && this.px > -9000) {
+      this.curX += (this.px - this.curX) * Math.min(1, dt * 16);
+      this.curY += (this.py - this.curY) * Math.min(1, dt * 16);
+      const ring = this.curRef.current, dot = this.dotRef.current;
+      if (ring) ring.style.transform = 'translate3d(' + this.curX.toFixed(1) + 'px,' + this.curY.toFixed(1) + 'px,0)';
+      if (dot) dot.style.transform = 'translate3d(' + this.px + 'px,' + this.py + 'px,0)';
     }
 
     const peek = this.peekRef.current;
