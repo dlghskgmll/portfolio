@@ -58,12 +58,12 @@ a:hover { opacity: 0.75; }
       </div>
       <div style="display: flex; flex-direction: column;">
         <sc-for list="{{projects}}" as="p" hint-placeholder-count="5">
-          <a href="{{p.href}}" target="{{p.target}}" rel="noopener" style="display: grid; grid-template-columns: 64px 1fr auto auto; align-items: center; gap: 28px; padding: 26px 12px; border-top: 1px solid rgba(60,60,67,0.16); color: #0a0a0c; transition: background 0.25s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1);" style-hover="background: rgba(60,60,67,0.05); transform: translateX(10px); opacity: 1;">
+          <div onClick="{{p.open}}" onKeyDown="{{p.keyOpen}}" role="button" tabIndex="0" aria-label="{{p.t}} 상세 보기" style="display: grid; grid-template-columns: 64px 1fr auto auto; align-items: center; gap: 28px; padding: 26px 12px; border-top: 1px solid rgba(60,60,67,0.16); color: #0a0a0c; cursor: pointer; transition: background 0.25s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1);" style-hover="background: rgba(60,60,67,0.05); transform: translateX(10px); opacity: 1;">
             <span style="color: rgba(60,60,67,0.4); font-size: 15px; font-weight: 600;">{{p.i}}</span>
             <span style="font-size: clamp(26px, 3.6vw, 54px); font-weight: 800; letter-spacing: -0.015em; line-height: 1.05;">{{p.t}}</span>
             <span style="color: rgba(60,60,67,0.6); font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-align: right;">{{p.c}}</span>
             <span style="width: 148px; height: 94px; display: block;"><img src="{{p.img}}" alt="{{p.t}}" loading="lazy" style="width: 148px; height: 94px; object-fit: cover; border-radius: 14px; display: block; background: rgba(60,60,67,0.08);"></img></span>
-          </a>
+          </div>
         </sc-for>
         <div style="border-top: 1px solid rgba(60,60,67,0.16);"></div>
       </div>
@@ -71,6 +71,17 @@ a:hover { opacity: 0.75; }
     <section id="about" ref="{{aboutRef}}" data-screen-label="About" style="max-width: 1280px; margin: 0 auto; padding: 40px 40px 150px;">
       <div style="color: rgba(60,60,67,0.6); font-size: 13px; font-weight: 700; letter-spacing: 0.3em; margin-bottom: 30px;">ABOUT</div>
       <p style="margin: 0 0 44px; max-width: 21em; color: #0a0a0c; font-size: clamp(28px, 3.4vw, 52px); font-weight: 700; line-height: 1.24; letter-spacing: -0.015em; text-wrap: pretty; opacity: {{aboutOp}}; transform: {{aboutShift}}; transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);">중력을 믿는 디자이너, 이환희입니다 — 글자는 떨어뜨리고, 완성도는 끌어올립니다.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 40px; margin-bottom: 44px; opacity: {{aboutOp}}; transition: opacity 0.9s ease 0.18s;">
+        <div>
+          <div style="color: rgba(60,60,67,0.45); font-size: 12px; font-weight: 700; letter-spacing: 0.22em; margin-bottom: 14px;">EDUCATION</div>
+          <p style="margin: 0; color: #0a0a0c; font-size: 17px; font-weight: 600; line-height: 1.6;">전남대학교 인공지능학부<br>정보보안전공 3학년</p>
+        </div>
+        <div>
+          <div style="color: rgba(60,60,67,0.45); font-size: 12px; font-weight: 700; letter-spacing: 0.22em; margin-bottom: 14px;">ACTIVITY</div>
+          <p style="margin: 0 0 10px; color: #0a0a0c; font-size: 17px; font-weight: 600; line-height: 1.6;">2026 전남대학교 인공지능혁신융합대학사업단(AICOSS) 서포터즈</p>
+          <p style="margin: 0; color: #0a0a0c; font-size: 17px; font-weight: 600; line-height: 1.6;">2026 한전KDN 공공기관 AI 서포터즈</p>
+        </div>
+      </div>
       <div style="display: flex; flex-wrap: wrap; gap: 12px; opacity: {{aboutOp}}; transition: opacity 0.9s ease 0.25s;">
         <span style="padding: 11px 22px; border-radius: 999px; border: 1px solid rgba(60,60,67,0.2); color: #0a0a0c; font-size: 14px; font-weight: 600; letter-spacing: 0.06em;">VIDEO</span>
         <span style="padding: 11px 22px; border-radius: 999px; border: 1px solid rgba(60,60,67,0.2); color: #0a0a0c; font-size: 14px; font-weight: 600; letter-spacing: 0.06em;">MOTION</span>
@@ -84,20 +95,69 @@ a:hover { opacity: 0.75; }
     <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.32em; color: rgba(255,255,255,0.8);">NEXT PROJECT?</div>
     <h2 style="margin: 0; overflow: hidden; display: flex; font-weight: 800; font-size: clamp(52px, 11vw, 190px); line-height: 1.02; letter-spacing: -0.02em; white-space: pre;"><sc-for list="{{ctaTitle}}" as="L" hint-placeholder-count="10"><span style="{{L.st}}">{{L.c}}</span></sc-for></h2>
     <a href="mailto:leehwanhee0622@jnu.ac.kr" style="margin-top: 6px; padding: 17px 36px; border-radius: 999px; color: #fff; font-size: 16px; font-weight: 700; letter-spacing: 0.04em; border: 1px solid rgba(255,255,255,0.28); background: linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.08) 55%, rgba(255,255,255,0.14) 100%); backdrop-filter: blur(28px) saturate(200%) brightness(1.08); -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.08); box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.65), inset 0 -1px 1px rgba(255,255,255,0.18), 0 12px 32px rgba(0,0,0,0.16);">leehwanhee0622@jnu.ac.kr</a>
-    <div style="display: flex; gap: 30px; font-size: 13px; font-weight: 600; letter-spacing: 0.1em;">
-      <a href="https://www.youtube.com/@aicoss" target="_blank" rel="noopener">YOUTUBE</a>
-      <a href="https://www.instagram.com/p/DaALi9hEQKq/" target="_blank" rel="noopener">INSTAGRAM</a>
-    </div>
     <div style="position: absolute; bottom: 26px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 28px; color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 600; letter-spacing: 0.1em;">
       <span>©2026 LEE HWANHEE</span>
       <span>GWANGJU, KR</span>
     </div>
   </section>
+  <sc-if value="{{workOpen}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeWork}}" style="position: fixed; inset: 0; z-index: 60; background: rgba(8,10,14,0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 4vw, 48px);">
+      <div role="dialog" aria-modal="true" aria-label="{{wTitle}}" onClick="{{stopProp}}" style="position: relative; width: 100%; max-width: 880px; max-height: 88vh; overflow-y: auto; background: #fff; border-radius: 28px; padding: clamp(26px, 4vw, 48px); box-shadow: 0 32px 90px rgba(0,0,0,0.34); font-family: 'Bricolage Grotesque', -apple-system, sans-serif;">
+        <button onClick="{{closeWork}}" aria-label="닫기" style="position: absolute; top: 18px; right: 18px; width: 42px; height: 42px; border-radius: 999px; border: 1px solid rgba(60,60,67,0.2); background: rgba(60,60,67,0.05); color: #0a0a0c; font-size: 17px; line-height: 1; cursor: pointer;">✕</button>
+        <div style="color: rgba(60,60,67,0.6); font-size: 12px; font-weight: 700; letter-spacing: 0.2em; margin-bottom: 12px;">{{wCat}}</div>
+        <h3 style="margin: 0 0 18px; color: #0a0a0c; font-size: clamp(26px, 3.6vw, 44px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; padding-right: 46px;">{{wTitle}}</h3>
+        <p style="margin: 0 0 26px; max-width: 44em; color: rgba(60,60,67,0.85); font-size: 16px; line-height: 1.72;">{{wDesc}}</p>
+        <sc-if value="{{wLink}}" hint-placeholder-val="{{false}}">
+          <a href="{{wLink}}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; margin-bottom: 28px; padding: 14px 28px; border-radius: 999px; background: #007AFF; color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 0.02em;">{{wLinkLabel}} ↗</a>
+        </sc-if>
+        <sc-if value="{{wVideo}}" hint-placeholder-val="{{false}}">
+          <div style="aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #000;">
+            <iframe src="{{wVideo}}" title="{{wTitle}}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen="" style="width: 100%; height: 100%; border: 0; display: block;"></iframe>
+          </div>
+        </sc-if>
+        <sc-if value="{{wImage}}" hint-placeholder-val="{{false}}">
+          <img src="{{wImage}}" alt="{{wTitle}}" style="width: 100%; max-height: 62vh; object-fit: contain; border-radius: 18px; display: block; background: rgba(60,60,67,0.06);"></img>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;word&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;LEEHWANHEE&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;bg&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#007AFF&quot;,&quot;options&quot;:[&quot;#007AFF&quot;,&quot;#5856D6&quot;,&quot;#30B0C7&quot;,&quot;#101014&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Look&quot;},&quot;ambient&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
+const WORKS = [
+  {
+    i: '01', t: 'AICOSS 서포터즈 영상', c: 'VIDEO · 2026', img: 'assets/work/01-video.jpg',
+    desc: 'AICOSS 서포터즈로 제작한 영상 3편 — 행사 스케치 「FaceTime from PBG」, 「2026 서포터즈 워크숍 Vlog」, 「마스코트 챌린지 쇼츠」. 기획·촬영·편집·썸네일까지 전 과정을 1인으로 수행했고, 세 편 모두 전남대학교 인공지능혁신융합대학사업단 공식 유튜브 채널에 게시됐습니다.',
+    link: 'https://youtu.be/NLyotwEHBkg', linkLabel: 'YouTube에서 보기',
+    video: 'https://www.youtube.com/embed/NLyotwEHBkg',
+  },
+  {
+    i: '02', t: 'AICOSS 마스코트 디자인', c: 'BRANDING · 2026', img: 'assets/work/02-mascot.jpg',
+    desc: '사업단에 마스코트가 없다는 점에 착안해 직접 제안·제작했습니다. 인공지능 클라우드 서비스에서 착안한 「융융이」와 사업단 핵심 목표 AI+X를 형상화한 「엑씨」 두 캐릭터를 설계하고, 각 마스코트의 세계관과 활용 방안까지 담은 제안서를 만들어 공유한 결과 사업단 공식 마스코트로 채택됐습니다.',
+    detail: 'assets/work/02-mascot-detail.jpg',
+  },
+  {
+    i: '03', t: 'AIM CHALLENGE 카드뉴스', c: 'CONTENT · 2026', img: 'assets/work/03-cardnews.jpg',
+    desc: 'CO-SHOW·AIM Challenge 2026 「Re:Local」 홍보 카드뉴스 5종. 챌린지 주제인 「지역 경험」에 맞춰 마스코트가 여행하는 모습을 크레용 질감으로 표현했고, 사업단에서 전달받은 로고 톤에 맞춰 이질감이 없도록 템플릿 없이 전부 직접 디자인했습니다.',
+    link: 'https://www.instagram.com/p/DaALi9hEQKq/', linkLabel: '게시물 보기',
+    detail: 'assets/work/03-cardnews-detail.jpg',
+  },
+  {
+    i: '04', t: 'AICOSS 인스타그램 배너', c: 'CONTENT · 2026', img: 'assets/work/04-banner.jpg',
+    desc: '학생들이 계정에 접속하면 프로필 하단에서 바로 보게 되는 배너입니다. 세 개의 게시물을 이어 붙여 왼쪽은 융융이 소개, 가운데는 사업단 소개, 오른쪽은 엑씨 소개로 이어지도록 설계했고, 생일·MBTI 같은 위트 있는 요소로 마스코트에 친근감을 더했습니다.',
+    link: 'https://www.instagram.com/p/DY33t9TEd-5/', linkLabel: '게시물 보기',
+    detail: 'assets/work/04-banner-detail.jpg',
+  },
+  {
+    i: '05', t: '마스코트 굿즈 제작', c: 'GOODS · 2026', img: 'assets/work/05-goods.jpg',
+    desc: '1학기 홍보부스용 마스코트 스티커·행운부적 디자인. 마스코트를 처음 선보이는 자리인 만큼 캐릭터 특징과 사업단 로고가 잘 드러나도록 했고, 시험기간임을 감안해 딱딱한 명함보다 오래 소지할 수 있는 명함형 행운부적으로 제작해 배포했습니다.',
+    link: 'https://www.instagram.com/p/DY33SOckUGy/', linkLabel: '게시물 보기',
+    detail: 'assets/work/05-goods-detail.jpg',
+  },
+];
+
 class Component extends DCLogic {
-  state = { done: false, scrolled: false, seen: {} };
+  state = { done: false, scrolled: false, seen: {}, openWork: null };
   canvasRef = React.createRef();
   rootRef = React.createRef();
   headRef = React.createRef();
@@ -120,6 +180,7 @@ class Component extends DCLogic {
 
   renderVals() {
     const word = String(this.props.word ?? 'LEEHWANHEE').toUpperCase();
+    const W = this.state.openWork != null ? WORKS[this.state.openWork] : null;
     return {
       canvasRef: this.canvasRef, rootRef: this.rootRef, headRef: this.headRef,
       workRef: this.workRef, aboutRef: this.aboutRef, ctaRef: this.ctaRef,
@@ -134,18 +195,21 @@ class Component extends DCLogic {
       ctaTitle: this.mkTitle("LET'S TALK", 'contact', 0.1),
       aboutOp: this.state.seen.about ? 1 : 0,
       aboutShift: this.state.seen.about ? 'translateY(0)' : 'translateY(36px)',
-      projects: [
-        { i: '01', t: 'AICOSS 서포터즈 영상', c: 'VIDEO · 2026', img: 'assets/work/01-video.jpg',
-          href: 'https://youtu.be/NLyotwEHBkg', target: '_blank' },
-        { i: '02', t: 'AICOSS 마스코트 디자인', c: 'BRANDING · 2026', img: 'assets/work/02-mascot.jpg',
-          href: '#work', target: '_self' },
-        { i: '03', t: 'AIM CHALLENGE 카드뉴스', c: 'CONTENT · 2026', img: 'assets/work/03-cardnews.jpg',
-          href: 'https://www.instagram.com/p/DaALi9hEQKq/', target: '_blank' },
-        { i: '04', t: 'AICOSS 인스타그램 배너', c: 'CONTENT · 2026', img: 'assets/work/04-banner.jpg',
-          href: 'https://www.instagram.com/p/DY33t9TEd-5/', target: '_blank' },
-        { i: '05', t: '마스코트 굿즈 제작', c: 'GOODS · 2026', img: 'assets/work/05-goods.jpg',
-          href: 'https://www.instagram.com/p/DY33SOckUGy/', target: '_blank' },
-      ],
+      projects: WORKS.map((w, i) => ({
+        ...w,
+        open: () => this.setState({ openWork: i }),
+        keyOpen: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState({ openWork: i }); } },
+      })),
+      workOpen: !!W,
+      wCat: W ? W.c : '',
+      wTitle: W ? W.t : '',
+      wDesc: W ? W.desc : '',
+      wLink: W ? (W.link || null) : null,
+      wLinkLabel: W ? (W.linkLabel || '바로가기') : '',
+      wVideo: W ? (W.video || null) : null,
+      wImage: W ? (W.detail || null) : null,
+      closeWork: () => this.setState({ openWork: null }),
+      stopProp: (e) => e.stopPropagation(),
     };
   }
 
@@ -157,6 +221,8 @@ class Component extends DCLogic {
     this.onLeave = () => { this.px = -9999; this.py = -9999; };
     window.addEventListener('pointermove', this.onMove);
     window.addEventListener('pointerleave', this.onLeave);
+    this.onKey = e => { if (e.key === 'Escape' && this.state.openWork != null) this.setState({ openWork: null }); };
+    window.addEventListener('keydown', this.onKey);
     this.onResize = () => {
       this.W = window.innerWidth; this.H = window.innerHeight;
       const d = Math.min(2, window.devicePixelRatio || 1);
