@@ -23,6 +23,22 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: #007AFF; }
 a { color: inherit; text-decoration: none; }
 a:hover { opacity: 0.75; }
 @keyframes om-hint { 0%, 100% { transform: translateY(0); opacity: 0.9; } 50% { transform: translateY(8px); opacity: 0.45; } }
+@keyframes wk-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+[data-marquee-track] { animation: wk-marquee 30s linear infinite; }
+[data-marquee]:hover [data-marquee-track] { animation-play-state: paused; }
+[data-wk-thumb] { display: none; }
+@media (hover: none), (max-width: 900px) {
+  [data-wk-thumb] { display: block; }
+  [data-wk-peek] { display: none !important; }
+}
+@media (max-width: 720px) {
+  [data-wk-cat], [data-wk-arrow] { display: none !important; }
+  [data-wk-row] { grid-template-columns: 30px 1fr 78px !important; gap: 13px !important; padding: 19px 2px !important; }
+  [data-wk-num] { font-size: 15px !important; }
+  [data-wk-title] { font-size: 20px !important; line-height: 1.22 !important; }
+  [data-wk-thumb] img { width: 78px !important; height: 52px !important; }
+}
+@media (prefers-reduced-motion: reduce) { [data-marquee-track] { animation: none; } }
 </style>
 </helmet>
 <div ref="{{rootRef}}" data-screen-label="Home" style="position: fixed; inset: 0; background: #007AFF; overflow-y: auto; overflow-x: hidden; overscroll-behavior: none; scroll-behavior: smooth; font-family: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased;">
@@ -54,20 +70,29 @@ a:hover { opacity: 0.75; }
     <section id="work" ref="{{workRef}}" data-screen-label="Work" style="max-width: 1280px; margin: 0 auto; padding: 110px 40px 90px;">
       <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 52px;">
         <h2 style="margin: 0; overflow: hidden; display: flex; color: #0a0a0c; font-weight: 800; font-size: clamp(44px, 7vw, 110px); line-height: 1.04; letter-spacing: -0.02em;"><sc-for list="{{workTitle}}" as="L" hint-placeholder-count="4"><span style="{{L.st}}">{{L.c}}</span></sc-for></h2>
-        <div style="color: rgba(60,60,67,0.6); font-size: 14px; font-weight: 600; letter-spacing: 0.2em;">(05)</div>
+        <div style="color: rgba(60,60,67,0.6); font-size: 14px; font-weight: 600; letter-spacing: 0.2em;">(08)</div>
       </div>
       <div style="display: flex; flex-direction: column;">
-        <sc-for list="{{projects}}" as="p" hint-placeholder-count="5">
-          <div onClick="{{p.open}}" onKeyDown="{{p.keyOpen}}" role="button" tabIndex="0" aria-label="{{p.t}} 상세 보기" style="display: grid; grid-template-columns: 64px 1fr auto auto; align-items: center; gap: 28px; padding: 26px 12px; border-top: 1px solid rgba(60,60,67,0.16); color: #0a0a0c; cursor: pointer; transition: background 0.25s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1);" style-hover="background: rgba(60,60,67,0.05); transform: translateX(10px); opacity: 1;">
-            <span style="color: rgba(60,60,67,0.4); font-size: 15px; font-weight: 600;">{{p.i}}</span>
-            <span style="font-size: clamp(26px, 3.6vw, 54px); font-weight: 800; letter-spacing: -0.015em; line-height: 1.05;">{{p.t}}</span>
-            <span style="color: rgba(60,60,67,0.6); font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-align: right;">{{p.c}}</span>
-            <span style="width: 148px; height: 94px; display: block;"><img src="{{p.img}}" alt="{{p.t}}" loading="lazy" style="width: 148px; height: 94px; object-fit: cover; border-radius: 14px; display: block; background: rgba(60,60,67,0.08);"></img></span>
+        <sc-for list="{{projects}}" as="p" hint-placeholder-count="8">
+          <div style="{{p.wrapSt}}">
+            <div data-wk-row="" onClick="{{p.open}}" onKeyDown="{{p.keyOpen}}" onMouseEnter="{{p.enter}}" onMouseLeave="{{p.leave}}" onFocus="{{p.enter}}" onBlur="{{p.leave}}" role="button" tabIndex="0" aria-label="{{p.t}} 상세 보기" style="{{p.rowSt}}">
+              <span data-wk-num="" style="{{p.numSt}}">{{p.i}}</span>
+              <span data-wk-title="" style="{{p.titleSt}}">{{p.t}}</span>
+              <span data-wk-cat="" style="{{p.catSt}}">{{p.c}}</span>
+              <span data-wk-thumb=""><img src="{{p.img}}" alt="" loading="lazy" style="width: 108px; height: 70px; object-fit: cover; border-radius: 12px; display: block; background: rgba(60,60,67,0.08);"></img></span>
+              <span data-wk-arrow="" style="{{p.arrowSt}}">↗</span>
+            </div>
           </div>
         </sc-for>
         <div style="border-top: 1px solid rgba(60,60,67,0.16);"></div>
       </div>
     </section>
+    <div data-marquee="" aria-hidden="true" style="position: relative; overflow: hidden; background: #0a0a0c; padding: 26px 0; margin-bottom: 10px;">
+      <div data-marquee-track="" style="display: flex; width: max-content; white-space: nowrap; will-change: transform;">
+        <span style="font-size: clamp(34px, 5vw, 68px); font-weight: 800; letter-spacing: -0.01em; color: transparent; -webkit-text-stroke: 1.4px rgba(255,255,255,0.55); padding-right: 0.5em;">{{marqueeText}}</span>
+        <span style="font-size: clamp(34px, 5vw, 68px); font-weight: 800; letter-spacing: -0.01em; color: transparent; -webkit-text-stroke: 1.4px rgba(255,255,255,0.55); padding-right: 0.5em;">{{marqueeText}}</span>
+      </div>
+    </div>
     <section id="about" ref="{{aboutRef}}" data-screen-label="About" style="max-width: 1280px; margin: 0 auto; padding: 40px 40px 150px;">
       <div style="color: rgba(60,60,67,0.6); font-size: 13px; font-weight: 700; letter-spacing: 0.3em; margin-bottom: 30px;">ABOUT</div>
       <p style="margin: 0 0 44px; max-width: 21em; color: #0a0a0c; font-size: clamp(28px, 3.4vw, 52px); font-weight: 700; line-height: 1.24; letter-spacing: -0.015em; text-wrap: pretty; opacity: {{aboutOp}}; transform: {{aboutShift}}; transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);">중력을 믿는 디자이너, 이환희입니다 — 글자는 떨어뜨리고, 완성도는 끌어올립니다.</p>
@@ -100,6 +125,9 @@ a:hover { opacity: 0.75; }
       <span>GWANGJU, KR</span>
     </div>
   </section>
+  <div data-wk-peek="" ref="{{peekRef}}" aria-hidden="true" style="position: fixed; top: 0; left: 0; z-index: 40; width: 264px; pointer-events: none; will-change: transform;">
+    <div style="{{peekInnerSt}}"><img src="{{peekSrc}}" alt="" style="width: 100%; height: 176px; object-fit: cover; display: block; border-radius: 16px; box-shadow: 0 22px 54px rgba(0,0,0,0.28);"></img></div>
+  </div>
   <sc-if value="{{workOpen}}" hint-placeholder-val="{{false}}">
     <div onClick="{{closeWork}}" style="position: fixed; inset: 0; z-index: 60; background: rgba(8,10,14,0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 4vw, 48px);">
       <div role="dialog" aria-modal="true" aria-label="{{wTitle}}" onClick="{{stopProp}}" style="position: relative; width: 100%; max-width: 880px; max-height: 88vh; overflow-y: auto; background: #fff; border-radius: 28px; padding: clamp(26px, 4vw, 48px); box-shadow: 0 32px 90px rgba(0,0,0,0.34); font-family: 'Bricolage Grotesque', -apple-system, sans-serif;">
@@ -113,6 +141,18 @@ a:hover { opacity: 0.75; }
         <sc-if value="{{wVideo}}" hint-placeholder-val="{{false}}">
           <div style="aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #000;">
             <iframe src="{{wVideo}}" title="{{wTitle}}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen="" style="width: 100%; height: 100%; border: 0; display: block;"></iframe>
+          </div>
+        </sc-if>
+        <sc-if value="{{wMp4}}" hint-placeholder-val="{{false}}">
+          <div style="max-width: 340px; margin: 0 auto;">
+            <video src="{{wMp4}}" poster="{{wPoster}}" controls="{{yes}}" playsInline="{{yes}}" preload="metadata" style="width: 100%; max-height: 66vh; display: block; border-radius: 18px; background: #000;"></video>
+          </div>
+        </sc-if>
+        <sc-if value="{{wHasPages}}" hint-placeholder-val="{{false}}">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
+            <sc-for list="{{wPages}}" as="pg" hint-placeholder-count="4">
+              <img src="{{pg.src}}" alt="{{pg.alt}}" loading="lazy" style="width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; display: block; border: 1px solid rgba(60,60,67,0.14); background: rgba(60,60,67,0.06);"></img>
+            </sc-for>
           </div>
         </sc-if>
         <sc-if value="{{wImage}}" hint-placeholder-val="{{false}}">
@@ -154,11 +194,28 @@ const WORKS = [
     link: 'https://www.instagram.com/p/DY33SOckUGy/', linkLabel: '게시물 보기',
     detail: 'assets/work/05-goods-detail.jpg',
   },
+  {
+    i: '06', t: '마스코트 댄스커버 영상', c: 'VIDEO · 2026', img: 'assets/work/06-dance.jpg',
+    desc: '마스코트 융융이의 댄스커버 숏폼. 네온사인이 켜진 골목을 배경으로 융융이가 춤을 추는 15초 영상으로, 마스코트를 정적인 일러스트가 아니라 움직이는 캐릭터로 각인시키는 것을 목표로 만들었습니다. 사업단 공식 인스타그램에 릴스로 게시했습니다.',
+    link: 'https://www.instagram.com/reel/DazKGQdJhXw/', linkLabel: '릴스 보기',
+    mp4: 'assets/work/06-dance.mp4', poster: 'assets/work/06-dance.jpg',
+  },
+  {
+    i: '07', t: 'TreadForm AI', c: 'WE-MEET · 2026', img: 'assets/work/07-treadform.jpg',
+    desc: '2026 상반기 WE-Meet 산학협력 프로젝트. 실내 트레드밀 환경에 특화된 Vision AI 기반 달리기 자세 분석·부상 방지 솔루션으로, Team 소인배에서 프론트엔드를 맡아 측정부터 리포트까지 이어지는 앱 화면을 구현했습니다.',
+    pages: ['assets/work/07-p1.jpg', 'assets/work/07-p2.jpg', 'assets/work/07-p3.jpg', 'assets/work/07-p4.jpg'],
+  },
+  {
+    i: '08', t: 'ADviser', c: 'BRANDING · 2025', img: 'assets/work/08-adviser.jpg',
+    desc: '2025 WE-Meet 프로젝트 「데이터가 알려주는 마케팅의 정답지」. 매출 예측과 가게 진단을 자동으로 짚어주는 소상공인용 AI 마케팅 솔루션 ADviser에 Team FighTeam으로 참여해, 투자 유치용 IR Pitch Deck 제작과 스토리텔링, 브랜드 비주얼 아이덴티티(VI) 정립, 발표 자료 디자인 총괄을 맡았습니다.',
+    pages: ['assets/work/08-p1.jpg', 'assets/work/08-p2.jpg', 'assets/work/08-p3.jpg', 'assets/work/08-p4.jpg'],
+  },
 ];
 
 class Component extends DCLogic {
-  state = { done: false, scrolled: false, seen: {}, openWork: null };
+  state = { done: false, scrolled: false, seen: {}, openWork: null, hoverWork: null };
   canvasRef = React.createRef();
+  peekRef = React.createRef();
   rootRef = React.createRef();
   headRef = React.createRef();
   workRef = React.createRef();
@@ -181,6 +238,7 @@ class Component extends DCLogic {
   renderVals() {
     const word = String(this.props.word ?? 'LEEHWANHEE').toUpperCase();
     const W = this.state.openWork != null ? WORKS[this.state.openWork] : null;
+    const HV = this.state.openWork != null ? null : this.state.hoverWork;
     return {
       canvasRef: this.canvasRef, rootRef: this.rootRef, headRef: this.headRef,
       workRef: this.workRef, aboutRef: this.aboutRef, ctaRef: this.ctaRef,
@@ -195,11 +253,63 @@ class Component extends DCLogic {
       ctaTitle: this.mkTitle("LET'S TALK", 'contact', 0.1),
       aboutOp: this.state.seen.about ? 1 : 0,
       aboutShift: this.state.seen.about ? 'translateY(0)' : 'translateY(36px)',
-      projects: WORKS.map((w, i) => ({
-        ...w,
-        open: () => this.setState({ openWork: i }),
-        keyOpen: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState({ openWork: i }); } },
-      })),
+      yes: true,
+      marqueeText: 'SELECTED WORK ✳ VIDEO ✳ BRANDING ✳ CONTENT DESIGN ✳ VIBE CODING ✳ 2025—2026 ✳ ',
+      peekRef: this.peekRef,
+      peekSrc: HV != null ? WORKS[HV].img : '',
+      peekInnerSt: {
+        transformOrigin: '0 0',
+        transition: 'opacity 0.35s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1)',
+        opacity: HV != null ? 1 : 0,
+        transform: HV != null ? 'scale(1) rotate(-2.5deg)' : 'scale(0.86) rotate(-8deg)',
+      },
+      projects: WORKS.map((w, i) => {
+        const on = HV === i;
+        const dim = HV != null && !on;
+        const rv = !!this.state.seen.work;
+        return {
+          ...w,
+          wrapSt: {
+            opacity: rv ? 1 : 0,
+            transform: rv ? 'translateY(0)' : 'translateY(34px)',
+            transition: 'opacity 0.7s cubic-bezier(0.16,1,0.3,1) ' + (0.22 + i * 0.07).toFixed(2) + 's, transform 0.7s cubic-bezier(0.16,1,0.3,1) ' + (0.22 + i * 0.07).toFixed(2) + 's',
+          },
+          rowSt: {
+            display: 'grid', gridTemplateColumns: '64px 1fr auto auto auto',
+            alignItems: 'center', gap: '28px', padding: '24px 12px',
+            borderTop: '1px solid rgba(60,60,67,0.16)', cursor: 'pointer', outline: 'none',
+            opacity: dim ? 0.3 : 1,
+            transform: on ? 'translateX(14px)' : 'translateX(0)',
+            transition: 'opacity 0.45s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1)',
+          },
+          numSt: {
+            fontSize: 'clamp(20px, 2.2vw, 30px)', fontWeight: 800, letterSpacing: '-0.01em',
+            color: on ? '#007AFF' : 'transparent',
+            WebkitTextStroke: on ? '0' : '1.2px rgba(60,60,67,0.42)',
+            transition: 'color 0.35s ease',
+          },
+          titleSt: {
+            fontSize: 'clamp(26px, 3.6vw, 54px)', fontWeight: 800,
+            letterSpacing: '-0.015em', lineHeight: 1.05,
+            color: on ? '#007AFF' : '#0a0a0c',
+            transition: 'color 0.35s ease',
+          },
+          catSt: {
+            color: 'rgba(60,60,67,0.6)', fontSize: '13px', fontWeight: 600,
+            letterSpacing: '0.1em', textAlign: 'right', whiteSpace: 'nowrap',
+          },
+          arrowSt: {
+            fontSize: '22px', lineHeight: 1, color: '#007AFF',
+            opacity: on ? 1 : 0,
+            transform: on ? 'translate(0,0)' : 'translate(-10px, 10px)',
+            transition: 'opacity 0.35s ease, transform 0.45s cubic-bezier(0.16,1,0.3,1)',
+          },
+          open: () => this.setState({ openWork: i }),
+          keyOpen: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.setState({ openWork: i }); } },
+          enter: () => { if (this.hasHover) this.setState({ hoverWork: i }); },
+          leave: () => this.setState(s => (s.hoverWork === i ? { hoverWork: null } : null)),
+        };
+      }),
       workOpen: !!W,
       wCat: W ? W.c : '',
       wTitle: W ? W.t : '',
@@ -207,6 +317,10 @@ class Component extends DCLogic {
       wLink: W ? (W.link || null) : null,
       wLinkLabel: W ? (W.linkLabel || '바로가기') : '',
       wVideo: W ? (W.video || null) : null,
+      wMp4: W ? (W.mp4 || null) : null,
+      wPoster: W ? (W.poster || W.img || '') : '',
+      wHasPages: !!(W && W.pages && W.pages.length),
+      wPages: W && W.pages ? W.pages.map((src, n) => ({ src, alt: W.t + ' 보고서 ' + (n + 1) + '쪽' })) : [],
       wImage: W ? (W.detail || null) : null,
       closeWork: () => this.setState({ openWork: null }),
       stopProp: (e) => e.stopPropagation(),
@@ -217,6 +331,8 @@ class Component extends DCLogic {
     const cv = this.canvasRef.current;
     this.ctx = cv.getContext('2d');
     this.px = -9999; this.py = -9999;
+    this.peekX = -400; this.peekY = -400;
+    this.hasHover = window.matchMedia('(hover: hover)').matches;
     this.onMove = e => { this.px = e.clientX; this.py = e.clientY; };
     this.onLeave = () => { this.px = -9999; this.py = -9999; };
     window.addEventListener('pointermove', this.onMove);
@@ -458,6 +574,15 @@ class Component extends DCLogic {
         ctx.fillText(m.ch, 0, 0);
         ctx.restore();
       }
+    }
+
+    const peek = this.peekRef.current;
+    if (peek) {
+      const tx = this.W * 0.58 + (this.px - this.W / 2) * 0.05;
+      const ty = Math.max(24, Math.min(this.H - 200, this.py - 88));
+      this.peekX += (tx - this.peekX) * Math.min(1, dt * 11);
+      this.peekY += (ty - this.peekY) * Math.min(1, dt * 11);
+      peek.style.transform = 'translate3d(' + this.peekX.toFixed(1) + 'px,' + this.peekY.toFixed(1) + 'px,0)';
     }
     this.raf = requestAnimationFrame(this.loop);
   }
