@@ -151,7 +151,7 @@ a:hover { opacity: 0.75; }
         <sc-if value="{{wHasPages}}" hint-placeholder-val="{{false}}">
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 12px;">
             <sc-for list="{{wPages}}" as="pg" hint-placeholder-count="4">
-              <img src="{{pg.src}}" alt="{{pg.alt}}" loading="lazy" style="width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; display: block; border: 1px solid rgba(60,60,67,0.14); background: rgba(60,60,67,0.06);"></img>
+              <img src="{{pg.src}}" alt="{{pg.alt}}" loading="lazy" style="width: 100%; height: auto; border-radius: 12px; display: block; border: 1px solid rgba(60,60,67,0.14); background: rgba(60,60,67,0.06);"></img>
             </sc-for>
           </div>
         </sc-if>
@@ -186,13 +186,14 @@ const WORKS = [
     i: '04', t: 'AICOSS 인스타그램 배너', c: 'CONTENT · 2026', img: 'assets/work/04-banner.jpg',
     desc: '학생들이 계정에 접속하면 프로필 하단에서 바로 보게 되는 배너입니다. 세 개의 게시물을 이어 붙여 왼쪽은 융융이 소개, 가운데는 사업단 소개, 오른쪽은 엑씨 소개로 이어지도록 설계했고, 생일·MBTI 같은 위트 있는 요소로 마스코트에 친근감을 더했습니다.',
     link: 'https://www.instagram.com/p/DY33t9TEd-5/', linkLabel: '게시물 보기',
-    detail: 'assets/work/04-banner-detail.jpg',
+    pages: ['assets/work/04-g1.jpg', 'assets/work/04-g2.jpg', 'assets/work/04-g3.jpg',
+            'assets/work/04-g4.jpg', 'assets/work/04-g5.jpg', 'assets/work/04-g6.jpg'],
   },
   {
     i: '05', t: '마스코트 굿즈 제작', c: 'GOODS · 2026', img: 'assets/work/05-goods.jpg',
     desc: '1학기 홍보부스용 마스코트 스티커·행운부적 디자인. 마스코트를 처음 선보이는 자리인 만큼 캐릭터 특징과 사업단 로고가 잘 드러나도록 했고, 시험기간임을 감안해 딱딱한 명함보다 오래 소지할 수 있는 명함형 행운부적으로 제작해 배포했습니다.',
     link: 'https://www.instagram.com/p/DY33SOckUGy/', linkLabel: '게시물 보기',
-    detail: 'assets/work/05-goods-detail.jpg',
+    pages: ['assets/work/05-g1.jpg', 'assets/work/05-g2.jpg'],
   },
   {
     i: '06', t: '마스코트 댄스커버 영상', c: 'VIDEO · 2026', img: 'assets/work/06-dance.jpg',
@@ -206,7 +207,7 @@ const WORKS = [
     pages: ['assets/work/07-p1.jpg', 'assets/work/07-p2.jpg', 'assets/work/07-p3.jpg', 'assets/work/07-p4.jpg'],
   },
   {
-    i: '08', t: 'ADviser', c: 'BRANDING · 2025', img: 'assets/work/08-adviser.jpg',
+    i: '08', t: 'ADviser', c: 'WE-MEET · 2025', img: 'assets/work/08-adviser.jpg',
     desc: '2025 WE-Meet 프로젝트 「데이터가 알려주는 마케팅의 정답지」. 매출 예측과 가게 진단을 자동으로 짚어주는 소상공인용 AI 마케팅 솔루션 ADviser에 Team FighTeam으로 참여해, 투자 유치용 IR Pitch Deck 제작과 스토리텔링, 브랜드 비주얼 아이덴티티(VI) 정립, 발표 자료 디자인 총괄을 맡았습니다.',
     pages: ['assets/work/08-p1.jpg', 'assets/work/08-p2.jpg', 'assets/work/08-p3.jpg', 'assets/work/08-p4.jpg'],
   },
@@ -377,7 +378,7 @@ class Component extends DCLogic {
       wMp4: W ? (W.mp4 || null) : null,
       wPoster: W ? (W.poster || W.img || '') : '',
       wHasPages: !!(W && W.pages && W.pages.length),
-      wPages: W && W.pages ? W.pages.map((src, n) => ({ src, alt: W.t + ' 보고서 ' + (n + 1) + '쪽' })) : [],
+      wPages: W && W.pages ? W.pages.map((src, n) => ({ src, alt: W.t + ' — ' + (n + 1) + '/' + W.pages.length })) : [],
       wImage: W ? (W.detail || null) : null,
       closeWork: () => this.closeModal(),
       modalBackdropSt: {
