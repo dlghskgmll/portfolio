@@ -70,10 +70,10 @@ a:hover { opacity: 0.75; }
     <section id="work" ref="{{workRef}}" data-screen-label="Work" style="max-width: 1280px; margin: 0 auto; padding: 110px 40px 90px;">
       <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 52px;">
         <h2 style="margin: 0; overflow: hidden; display: flex; color: #0a0a0c; font-weight: 800; font-size: clamp(44px, 7vw, 110px); line-height: 1.04; letter-spacing: -0.02em;"><sc-for list="{{workTitle}}" as="L" hint-placeholder-count="4"><span style="{{L.st}}">{{L.c}}</span></sc-for></h2>
-        <div style="color: rgba(60,60,67,0.6); font-size: 14px; font-weight: 600; letter-spacing: 0.2em;">(08)</div>
+        <div style="color: rgba(60,60,67,0.6); font-size: 14px; font-weight: 600; letter-spacing: 0.2em;">(09)</div>
       </div>
       <div style="display: flex; flex-direction: column;">
-        <sc-for list="{{projects}}" as="p" hint-placeholder-count="8">
+        <sc-for list="{{projects}}" as="p" hint-placeholder-count="9">
           <div style="{{p.wrapSt}}">
             <div data-wk-row="" onClick="{{p.open}}" onKeyDown="{{p.keyOpen}}" onMouseEnter="{{p.enter}}" onMouseLeave="{{p.leave}}" onFocus="{{p.enter}}" onBlur="{{p.leave}}" role="button" tabIndex="0" aria-label="{{p.t}} 상세 보기" style="{{p.rowSt}}">
               <span data-wk-num="" style="{{p.numSt}}">{{p.i}}</span>
@@ -210,6 +210,12 @@ const WORKS = [
     i: '08', t: 'ADviser', c: 'WE-MEET · 2025', img: 'assets/work/08-adviser.jpg',
     desc: '2025 WE-Meet 프로젝트 「데이터가 알려주는 마케팅의 정답지」. 매출 예측과 가게 진단을 자동으로 짚어주는 소상공인용 AI 마케팅 솔루션 ADviser에 Team FighTeam으로 참여해, 투자 유치용 IR Pitch Deck 제작과 스토리텔링, 브랜드 비주얼 아이덴티티(VI) 정립, 발표 자료 디자인 총괄을 맡았습니다.',
     pages: ['assets/work/08-p1.jpg', 'assets/work/08-p2.jpg', 'assets/work/08-p3.jpg', 'assets/work/08-p4.jpg'],
+  },
+  {
+    i: '09', t: '급등랭킹 — 최신영화 TOP 5', c: 'WEB · 2026', img: 'assets/work/09-trending.jpg',
+    desc: '미래내일 일경험 교육을 들으며 만든 유튜브 급등 영상 랭킹 웹앱. YouTube Data API로 「최신영화」 상위 50개 영상을 수집한 뒤, 조회수 증가 속도(35%)·시청자 참여도(20%)·채널 내 성과(20%)·업로드 최신성(15%)·절대 조회수(10%)를 0~1로 정규화해 가중 합산한 급등 점수로 순위를 매겼습니다. 외부 유입 비율은 채널 소유자만 조회할 수 있어, 구독자 대비 조회수 배율을 간접 지표로 대체했습니다.',
+    link: 'https://dlghskgmll.github.io/trending-movies/', linkLabel: '사이트 열기',
+    pages: ['assets/work/09-p1.jpg', 'assets/work/09-p2.jpg', 'assets/work/09-p3.jpg'],
   },
 ];
 
